@@ -25,6 +25,10 @@ export const actions = {
   setHasAcceptedGdpr: ({ commit }, state) => {
     commit('SET_HAS_ACCEPTED_GDPR', state)
   },
+  setOsparcJobID: ({ commit }, osparcJobID) => {
+      console.log("committing cookie", osparcJobID)
+    commit('datasetComparison/setOsparcJobID', osparcJobID)
+  },
   async nuxtServerInit({ commit, dispatch }) {
     try {
       const client = createClient()
@@ -34,6 +38,14 @@ export const actions = {
       // Load GDPR cookie info
       const hasAcceptedGDPR = this.$cookies.get('GDPR:accepted')
       dispatch('setHasAcceptedGdpr', hasAcceptedGDPR)
+
+      // Load osparc job info
+      console.log("getting cookie")
+      const osparcJobID = this.$cookies.get('datasetComparison.osparcJobID')
+      console.log("got cookie", osparcJobID)
+      dispatch('setOsparcJobID', osparcJobID)
+      console.log(" committed cookie", osparcJobID)
+
     } catch (e) {
       console.error(e)
     }

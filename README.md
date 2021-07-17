@@ -27,6 +27,16 @@ $ yarn generate
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
 
+# Deploy
+We setup Heroku so it automatically deploys when push to master branch in github. 
+
+So then just push to github, and it should work
+
+```
+git checkout master
+git push
+```
+
 # KNOWN ISSUES
 - hot reload for frontend server isn't working, seems like each time it reloads it starts reading on a path that prepends the prefix (`sparc-app`) Everytime.
     * e.g., first time it's correct (`http://localhost:3000/sparc-app/enrich-data-for-datasets`)

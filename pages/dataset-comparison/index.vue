@@ -147,7 +147,7 @@
                    :datasetsInfo="datasetsCurrentlyBeingCompared"
                    :isVegaLoaded="isVegaLoaded"
                    :isVegaEmbedLoaded="isVegaEmbedLoaded"
-                   :isPollingOsparc="pollingOsparc"
+                   :isPollingOsparc="osparcJobID"
                 />
               </div>
             </el-col>
@@ -183,6 +183,11 @@ import DatasetDiscoveryVisualizationWrapper from '@/components/DatasetDiscoveryV
 
 const discoveryDataTypes = [
   {
+    label: 'Graph',
+    type: 'graph',
+    disabled: false,
+  },
+  {
     label: 'Image Clusters',
     type: 'imageCluster',
     disabled: true,
@@ -190,11 +195,6 @@ const discoveryDataTypes = [
   {
     label: 'NLP',
     type: 'nlp',
-    disabled: false,
-  },
-  {
-    label: 'Graph',
-    type: 'graph',
     disabled: false,
   },
   {
@@ -272,10 +272,6 @@ export default {
       isVegaLoaded: false,
       isVegaEmbedLoaded: false, 
 
-      // whether we need to keep polling osparc for data or not
-      pollingOsparc: false,
-      osparcJobID: null,
-
       /**
       * datasets that were compared when they last clicked the button, OR when component first mounted
       - initializes from the store
@@ -315,6 +311,10 @@ export default {
       return modified
     },
 
+    // whether we need to keep polling osparc for data or not
+    osparcJobID: function () {
+      return this.$store.state.datasetComparison.osparcJobID
+    },
 
 
     /**
@@ -395,7 +395,7 @@ export default {
         const { data } = await this.$axios.post(url, {testPayload: "dataset info"})
         console.log("results from creating job in osparc", data)
 
-        this.osparcJobID = data["job_id"]
+        this.$store.commit('datasetComparison/setOsparcJobID', data["job_id"])
 
         // start polling osparc through our flask api
         this.pollingOsparc = true
@@ -409,17 +409,20 @@ export default {
     },
 
     
-    // this is async so you just call once and let it run forever. don't actually watch it...
+    // keep requesting to see if job is done or not, 
+    // - and if successful then set results, or if fails stop polling
+    // - this is async so you just call once and let it run forever. don't actually watch it...
     async pollOsparcUntilComplete () {
-      while (this.pollOsparc) {
+      while (this.osparcJobID) {
         await this.pollOsparc(this.osparcJobID)
 
-        // sleep 5s 
-        const sleepSeconds = 5
+        // sleep 20s 
+        const sleepSeconds = 30
         await new Promise(resolve => setTimeout(resolve, sleepSeconds * 1000))
       }
     },
 
+    // a single round trip to our flask api to see if the osparc job is done yet
     async pollOsparc (osparcJobID) {
       const url = `${process.env.flask_api_host}/api/check-osparc-job/${osparcJobID}`
       const { data } = await this.$axios.get(url)
@@ -427,14 +430,13 @@ export default {
 
      
       if (data.finished) {
-        this.pollingOsparc = false
+        // this will stop the polling...hopefully
+        // should get called whether osparc job is successful or failed. 
+        this.$store.commit('datasetComparison/setOsparcJobID', null)
 
         if (data.success) {
           this.$store.commit('datasetComparison/setOsparcResults', data)
         }
-
-      } else {
-        this.pollingOsparc = true
       }
     },
 

@@ -32,6 +32,10 @@ export const state = () => ({
   // stuff returned by our osparc job
   osparcResults: null,
 
+  // if there's a current job we're polling, set this to that uuid string
+  // initialize from browser localStorage, since this can be maintained across multiple sessions
+  osparcJobID: null,
+
   // what we get back from es when we 
   // - kind of local cache so we don't have to call more than once
   // - keys are dataset DOI ids, values are the es record (inside the little wrapper we put with
@@ -49,7 +53,6 @@ export const mutations = {
     state.toCompare.push(dataset)
   },
 
-
   remove(state, dataset) {
     const matchIndex = state.toCompare.findIndex(ds => ds.id == dataset.id)
 
@@ -59,6 +62,21 @@ export const mutations = {
   ///////////////////////////
   // for handling osparc results
   ///////////////////////////
+
+  // set what we get back from osparc (through the flask app)
+  setOsparcJobID(state, osparcJobID) {
+    // persist to local storage
+    if (osparcJobID) {
+      const today = new Date()
+      const expirationDate = new Date(today.setDate(today.getDate() + 30))
+
+      this.$cookies.set('datasetComparison.osparcJobID', osparcJobID, { expires: expirationDate })
+    } else {
+      this.$cookies.remove('datasetComparison.osparcJobID')
+    }
+
+    state.osparcJobID = osparcJobID
+  },
 
   // set what we get back from osparc (through the flask app)
   setOsparcResults(state, osparcResults) {
