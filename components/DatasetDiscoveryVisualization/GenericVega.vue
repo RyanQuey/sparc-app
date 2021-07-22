@@ -148,6 +148,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.vega-chart-wrapper {
+  display: flex;
+  justify-content: center;
+}
 </style>
 </script>
 

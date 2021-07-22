@@ -36,27 +36,27 @@ export function generateWordCloudSpec (keywordsData) {
 	return {
 		"$schema": "https://vega.github.io/schema/vega/v5.json",
 		"name": "wordcloud",
-		"width": 400,
-		"height": 200,
+		"width": 800,
+		"height": 400,
 		"padding": 0,
 		"autosize": "none",
 
 		"signals": [
 			{
 				"name": "wordPadding", "value": 1,
-				"bind": {"input": "range", "min": 0, "max": 5, "step": 1}
+				"bind": {"input": "range", "min": 0, "max": 5, "step": 1, "name": "Word Padding"}
 			},
 			{
-				"name": "fontSizeRange0", "value": 8,
-				"bind": {"input": "range", "min": 8, "max": 42, "step": 1}
+				"name": "fontSizeRange0", "value": 16,
+				"bind": {"input": "range", "min": 8, "max": 42, "step": 1, "name": "Font Size (min)"}
 			},
 			{
-				"name": "fontSizeRange1", "value": 24,
-				"bind": {"input": "range", "min": 8, "max": 42, "step": 1}
+				"name": "fontSizeRange1", "value": 48,
+				"bind": {"input": "range", "min": 8, "max": 64, "step": 1, "name": "Font Size (max)"}
 			},
 			{
 				"name": "rotate", "value": 45,
-				"bind": {"input": "select", "options": [0, 30, 45, 60, 90]}
+				"bind": {"input": "select", "options": [0, 30, 45, 60, 90], "name": "Rotate"}
 			}
 		],
 

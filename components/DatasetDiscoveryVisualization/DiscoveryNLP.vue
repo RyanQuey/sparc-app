@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoading || !dataUsedInChart" class="">
+  <div v-loading="isLoading || !dataUsedInChart" class="wordcloud-wrapper">
     <generic-vega
       :dataForChart="dataUsedInChart"
       :elementId="'discovery-nlp-vega'"
@@ -111,4 +111,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.wordcloud-wrapper {
+  margin: auto;
+}
 </style>
