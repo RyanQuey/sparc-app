@@ -1,7 +1,7 @@
 <template>
   <div v-loading="!osparcDataForChart" class="">
     <generic-plotly
-      v-if="isPlotlyLoaded"
+      v-if="false && 'hiding until we get real data loaded into the plotly chart' && isPlotlyLoaded"
       :osparcData="osparcDataForChart"
       :elementId="'discovery-tabular-data-clustering-vega'"
       :generateSpec="generateSpec"
