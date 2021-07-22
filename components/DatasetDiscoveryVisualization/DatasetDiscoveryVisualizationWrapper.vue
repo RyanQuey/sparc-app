@@ -132,11 +132,16 @@ export default {
 
 <style lang="scss" scoped>
 .dataset-discovery-visualization-wrapper {
+  background-color: #fff;
+  border: 0.1rem solid #e4e7ed;
+  margin: 1rem 0 0 1rem;
+  padding: 1rem;
+
   h3 {
-    margin-top: 2rem;
   }
 }
 .vis-wrapper {
-  padding-left: 1rem;
+  margin: 0 1rem;
+  padding: 1rem;
 }
 </style>

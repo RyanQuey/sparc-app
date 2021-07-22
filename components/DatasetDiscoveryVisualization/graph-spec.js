@@ -6,7 +6,8 @@ export default (graphData) => {
   const spec = {
 		"$schema": "https://vega.github.io/schema/vega/v5.20.2.json",
 		"description": "A node-link diagram with force-directed layout.",
-		"width": 1200,
+		// just setting for a large monitor for now, make responsive later
+		"width": 1165,
 		"height": 500,
 		"padding": 0,
 		"autosize": "none",

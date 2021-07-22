@@ -135,6 +135,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#discovery-graph-vis {
+  padding: 0;
+}
 </style>
 </script>
 
