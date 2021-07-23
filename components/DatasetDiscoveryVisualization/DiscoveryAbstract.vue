@@ -99,8 +99,6 @@ export default {
 
       const image_name = "Correlation_heatmap.png"
       return `${process.env.flask_api_host}/api/results-images/${jobId}/${image_name}`
-
-
     },
   }
 }
@@ -118,7 +116,8 @@ export default {
     .chart-image {
       padding: 1rem;
       box-sizing: border-box;
-      max-width: 50%;
+      // for now, we only have one so it can be kind of big
+      max-width: 80%;
 
       img {
         max-width: 100%;

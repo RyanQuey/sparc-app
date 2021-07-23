@@ -1,7 +1,7 @@
 <template>
   <div v-loading="isLoading" class="">
     <generic-vega
-      v-if="isVegaLoaded && isVegaEmbedLoaded"
+      v-if="true || isVegaLoaded && isVegaEmbedLoaded"
       :dataForChart="dataUsedInChart"
       :elementId="'discovery-image-cluster'"
       :exampleImgURL="exampleImgURL"

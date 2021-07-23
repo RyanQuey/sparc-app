@@ -41,6 +41,11 @@ export const state = () => ({
   // stuff returned by our osparc job
   osparcResults: null,
 
+  // is matlab job finished?
+  // should be boolean
+  // really we should be able to determine from osparc job results...but right now the json returned by matlab job is not working, so just using this flag
+  matlabJobFinished: false,
+
   // what we get back from es when we hit their api (after user clicks "discover")
   // - kind of local cache so we don't have to call more than once
   // - keys are dataset DOI ids, values are the es record (inside the little wrapper we put with
@@ -68,6 +73,11 @@ export const mutations = {
   ///////////////////////////
   // for keeping track of last job ran
   ///////////////////////////
+
+  // just updates with new values
+  setMatlabJobStatus(state, value) {
+    state.matlabJobFinished = value
+  },
 
   // just updates with new values
   setLastJobRan(state, values) {

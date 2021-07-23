@@ -138,6 +138,25 @@
               :lg="searchColSpan('lg')"
             >
               <h2 class="results-header" v-if="datasetsCurrentlyBeingCompared.length > 0">Results</h2>
+              <div class="download-links" v-if="datasetsCurrentlyBeingCompared.length > 0">
+                <h4>Download Links</h4>
+                <div class="download-link">
+                  <a  v-if="pythonJobResult" @click="downloadOsparcJobResults('python')">
+                    Download Python Job Results
+                  </a>
+                </div>
+
+                <div class="download-link">
+                  <a v-if="isMatlabJobFinished" @click="downloadStaticFile('matlab', 'matlab_output.json')">
+                    Download Matlab Job Results
+                  </a>
+                </div>
+                <div class="download-link">
+                  <a v-if="isMatlabJobFinished" @click="downloadStaticFile('matlab', 'matlab_output.xlsx')">
+                    Download Matlab Job XLSX Legend
+                  </a>
+                </div>
+              </div>
               <div class="source-datasets-for-results" v-if="datasetsCurrentlyBeingCompared.length > 0">
                 <h4>Currently showing results for: </h4>
                 <div v-if="datasetsCurrentlyBeingCompared.length > 0" class="">
@@ -328,9 +347,6 @@ export default {
       //pollingPythonOsparcJob: false,
       //pollingMatlabOsparcJob: false,
 
-      // if the matlab osparc job successfully completed
-      isMatlabJobFinished: false,
-
       osparcJobID: null,
 
       breadcrumb: [
@@ -393,6 +409,13 @@ export default {
       return this.lastJobRun.pythonOsparcJobID
     },
 
+    // if the matlab osparc job successfully completed
+    // really we should be able to determine from osparc job results...but right now the json returned by matlab job is not working, so just using this flag
+    isMatlabJobFinished: function () {
+      console.log(this.$store.state.datasetComparison)
+      return this.$store.state.datasetComparison.matlabJobFinished
+    },
+
     /**
      * list of datasets we are comparing
      * NOTE not currently in use, but I think this should return all data
@@ -401,6 +424,31 @@ export default {
     tableData: function() {
       //return propOr([], 'items', this.searchData)
       return propOr([], this.$store.state.datasetComparison.toCompare)
+    },
+
+    pythonJobResult () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base && base.outputs.output1
+    },
+
+    matlabJobResult () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base && base.outputs.matlab_output
+    },
+
+    pythonOsparcJobId () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base && base.job_id
+    },
+
+    matlabOsparcJobId () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base && base.matlab_job_id
+    },
+
+    osparcResults () {
+      const base = this.$store.state.datasetComparison.osparcResults
+      return base
     },
 
     q: function() {
@@ -413,7 +461,7 @@ export default {
      */
     isMobile: function() {
       return this.windowWidth <= 500
-    }
+    },
   },
 
   beforeMount: function() {
@@ -453,6 +501,31 @@ export default {
     // }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
+
+
+    // this is awful, but doing for debugging purposes in case matlab job doesn't work for whatever reason
+    // these will not create new jobs, but use existing job ids. If job is done, should return results very fast
+    // mostly speeds up development process
+    window.pollMatlabOsparcUntilComplete = this.pollMatlabOsparcUntilComplete
+    window.pollPythonOsparcUntilComplete = this.pollPythonOsparcUntilComplete
+
+    // if stuff gets all hairy in vue, the vars might not get set right. So just try to see if these libs registered manually and see what happens
+    // maybe especially happens in dev on hot reload??
+    try {
+      if(vegaEmbed) {
+        this.isVegaEmbedLoaded = true 
+        this.isVegaLoaded = true 
+      }
+    } catch (err) {
+      console.log("no problem, just ignore...hopefully vega is about to be loaded anyways")
+    }
+    try {
+      if(Plotly) {
+        this.isPlotlyLoaded = true 
+      }
+    } catch (err) {
+      console.log("no problem, just ignore...hopefully plotly is about to be loaded anyways")
+    }
   },
 
   methods: {
@@ -466,6 +539,9 @@ export default {
         datasetIds: clone(this.datasetsToCompare)
       })
 
+      // clear previous results
+      this.$store.commit('datasetComparison/setOsparcResults', null)
+      this.$store.commit('datasetComparison/setMatlabJobStatus', false)
 
       try {
         // also want to send here the massive osparc query kickoff function
@@ -499,6 +575,7 @@ export default {
       this.$store.commit('datasetComparison/setLastJobRan', newState)
 
       // then start polling the matlab job using the job id we get back
+      console.log("now starting to poll matlab job...")
       const matlabJobResult = await this.pollMatlabOsparcUntilComplete()
 
     },
@@ -510,6 +587,8 @@ export default {
       }
 
       await this.pollOsparcUntilComplete("matlab")
+      // TODO probably better to just put on vue store
+      this.$store.commit('datasetComparison/setMatlabJobStatus', true)
     },
     
     
@@ -519,6 +598,7 @@ export default {
 
       let done = false
       let result
+      console.log(`poll ${jobType} job until complete`)
 
       while (!done) {
         try {
@@ -536,11 +616,11 @@ export default {
 
           if (consecutiveFailures > 50) {
             // just give up here
-            console.log("giving up on job", jobId)
+            console.log("giving up on job", jobType)
 
             throw err
           } else {
-            console.log("retrying", jobId)
+            console.log("retrying", jobType)
 
           }
         }
@@ -568,9 +648,28 @@ export default {
           if (jobType == "python") {
             this.$store.commit('datasetComparison/setOsparcResults', data)
           } else if (jobType == "matlab") {
+            // matlab json returned from flask api
+            const matlabJson = data
 
-            // TODO probably better to just put on vue store
-            this.isMatlabJobFinished = true
+            // if matlab json is incorrectly serialized, make sure not to error out here
+            try {
+              // an extra conditional just in case
+              if (data.outputs.matlab_output) {
+                // for this one, merge matlab data into existing python data
+                console.log("original state", this.osparcResults)
+                const mergedState = clone(this.osparcResults)
+                mergedState.outputs.matlab_output = data.outputs.matlab_output
+                console.log("setting merged data", mergedState)
+                this.$store.commit('datasetComparison/setOsparcResults', mergedState)
+              } else {
+                console.log("looks like matlab json is still incorrect, skipping")
+              }
+            } catch (err) {
+              console.error(err)
+              console.log("failed to get matlab output json, continuing on")
+
+            }
+
           }
         } else {
           // finished...but failed
@@ -717,7 +816,52 @@ export default {
 
       this.activeDiscoveryDataTypes = activeTypesFullInfo.map(chartType => chartType.type)
 
-    }
+    },
+
+    // download json from osparc results
+    // TODO once the matlab json is correctly parsed and returned, we can use that instead, since it will be sent back to frontend. For now just send the file directly
+    downloadOsparcJobResults: function (jobType) {
+      // download solution taken from: 
+			// https://stackoverflow.com/a/30800715/6952495
+
+      const exportObj = jobType == "python" ? this.pythonJobResult : this.matlabJobResult
+      const exportName = jobType == "python" ? "python-job-result.json" : "matlab-job-result.json"
+
+			var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+			var downloadAnchorNode = document.createElement('a');
+			downloadAnchorNode.setAttribute("href",     dataStr);
+			downloadAnchorNode.setAttribute("download", exportName + ".json");
+			document.body.appendChild(downloadAnchorNode); // required for firefox
+			downloadAnchorNode.click();
+			downloadAnchorNode.remove();
+    },
+
+
+    // download a static file through flask api
+    downloadStaticFile: function (jobType, fileName) {
+      const jobId = jobType == "python" ? this.pythonOsparcJobId : this.matlabOsparcJobId
+      const apiUrl = `${process.env.flask_api_host}/api/results-images/${jobId}/${fileName}`
+      //const apiUrl = 'https://jsonplaceholder.typicode.com/todos/1'
+			// from this post: https://stackoverflow.com/a/9834261/6952495
+      fetch(apiUrl)
+				.then(resp => resp.blob())
+				.then(blob => {
+					const url = window.URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.style.display = 'none';
+					a.href = url;
+
+					// the filename you want
+					a.download = fileName;
+
+					document.body.appendChild(a);
+					a.click();
+
+					window.URL.revokeObjectURL(url);
+
+				})
+				.catch(() => alert('oh no!'));
+    },
   }
 }
 </script>
@@ -1004,6 +1148,17 @@ export default {
 }
 .source-datasets-for-results {
   padding-left: 1rem;
+}
+.download-links {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+
+  .download-link {
+    padding-left: 1rem;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 </style>
 

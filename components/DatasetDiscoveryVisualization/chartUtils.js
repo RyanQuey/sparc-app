@@ -171,7 +171,21 @@ export function generateSummaryTableSpec (tableData) {
 	const sideColumnFormatted = sideColumn.map(h => `<b>${h}</b>`)
 	rows.unshift(sideColumnFormatted)
 
-	const options = [{
+	const options = {
+		layout:{
+			width: 800,
+			height: 1500,
+			margin: {
+		    l: 50,
+		    r: 50,
+		    b: 100,
+		    t: 100,
+		    pad: 4
+		  },
+		},
+	}
+
+	const data = [{
 		type: 'table',
 		// TODO didn't get this part working yet...but it's ok
 		// header: {
@@ -184,17 +198,6 @@ export function generateSummaryTableSpec (tableData) {
 		// 	fill: {color: "grey"},
 		// 	font: {family: "Arial", size: 12, color: "white"}
 		// },
-		layout:{
-			width: 800,
-  			height: 1500,
-  			margin: {
-		    l: 50,
-		    r: 50,
-		    b: 100,
-		    t: 100,
-		    pad: 4
-		  },
-		},
 		cells: {
 			values: rows,
 			align: "center",
@@ -204,5 +207,5 @@ export function generateSummaryTableSpec (tableData) {
 	}]
 
 
-	return {options}
+	return {data, options}
 }
