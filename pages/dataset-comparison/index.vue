@@ -142,18 +142,18 @@
                 <h4>Download Links</h4>
                 <div class="download-link">
                   <a  v-if="pythonJobResult" @click="downloadOsparcJobResults('python')">
-                    Download Python Job Results
+                    Download Python Job Results (JSON)
                   </a>
                 </div>
 
                 <div class="download-link">
-                  <a v-if="isMatlabJobFinished" @click="downloadStaticFile('matlab', 'matlab_output.json')">
+                  <a v-if="false && 'skipping for now, just serve the xlsx' && isMatlabJobFinished" @click="downloadStaticFile('matlab', 'matlab_output.json')">
                     Download Matlab Job Results
                   </a>
                 </div>
                 <div class="download-link">
                   <a v-if="isMatlabJobFinished" @click="downloadStaticFile('matlab', 'matlab_output.xlsx')">
-                    Download Matlab Job XLSX Legend
+                    Download Matlab Job Results (XLSX)
                   </a>
                 </div>
               </div>
