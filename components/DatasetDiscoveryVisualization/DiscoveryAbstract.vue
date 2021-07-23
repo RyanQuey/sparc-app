@@ -7,7 +7,9 @@
         </div>
       </div>
     </div>
-    {{ osparcDataForChart }}
+  	<div class="abstract-text">
+      {{ osparcDataForChart }}
+    </div>
   </div>
 </template>
 
@@ -114,15 +116,18 @@ export default {
     justify-content: center;
 
     .chart-image {
-      padding: 1rem;
+      padding: 0 1rem 1rem 1rem;
       box-sizing: border-box;
       // for now, we only have one so it can be kind of big
-      max-width: 80%;
+      max-width: 60%;
 
       img {
         max-width: 100%;
       }
     }
   }
+}
+.abstract-text {
+  text-align: justify;
 }
 </style>
