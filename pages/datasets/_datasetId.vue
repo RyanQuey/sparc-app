@@ -944,7 +944,7 @@ export default {
     },
 
     /**
-     * add to compare dataset list, then go to compare view
+     * add to compare dataset list
      */
     addToCompareList: function() {
       this.$store.commit('datasetComparison/add', this.datasetInfo)

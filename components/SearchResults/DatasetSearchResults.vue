@@ -27,6 +27,15 @@
             Embargoed
           </sparc-pill>
         </nuxt-link>
+        <div class="knowmore-btn-wrapper">
+          <el-button
+            class="dataset-button knowmore"
+            @click="addToCompareList(scope.row)"
+            :disabled="inKnowMore(scope.row)"
+          >
+            {{ inKnowMore(scope.row) ? "Added!" : "Add to KnowMore" }} 
+          </el-button>
+        </div>
       </template>
     </el-table-column>
     <el-table-column
@@ -114,13 +123,29 @@ export default {
     areSimulationResults: function() {
       const searchType = pathOr('', ['query', 'type'], this.$route)
       return searchType === 'simulation'
-    }
+    },
+
   },
 
   methods: {
     onSortChange: function(payload) {
       onSortChange(this, payload)
-    }
+    },
+
+    inKnowMore: function (datasetInfo) {
+      const toCompare = this.$store.state.datasetComparison.toCompare
+      const datasetId = datasetInfo.id
+      const match = toCompare.find(ds => ds.id == datasetId)
+      return !!match
+    },
+
+    /**
+     * add to compare dataset list
+     */
+    addToCompareList: function(datasetInfo) {
+      this.$store.commit('datasetComparison/add', datasetInfo)
+    },
+
   }
 }
 </script>
@@ -157,5 +182,14 @@ table:not([class^='el-table__'])::before {
 .property-name-column {
   width: 160px;
   font-weight: bold;
+}
+.knowmore-btn-wrapper {
+  margin: 1rem 0 0 0;
+  display: flex;
+  justify-content: center;
+
+  .dataset-button.knowmore {
+    padding: 10px;
+  }
 }
 </style>
