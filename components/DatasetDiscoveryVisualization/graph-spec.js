@@ -138,7 +138,7 @@ export default (graphData) => {
 						// add a tooltip to nodes
 						"tooltip": {
 							signal: [
-								"{title: 'id: ' + datum.id}", 
+								"{title: datum.prettyLabel + ': ' + datum.name}", 
 							]
 						},
 					},
@@ -185,7 +185,7 @@ export default (graphData) => {
 					{
 						type: "formula", 
 						// want a little to the right of the node
-						expr: "nodeRadius + datum.x + 3", as: "labelX" 
+						expr: "nodeRadius*1.5 + datum.x + 4", as: "labelX" 
 					},
 
 				]
@@ -199,6 +199,12 @@ export default (graphData) => {
 				"encode": {
 					"enter": {
 						"text": {"field": "datum.prettyTitle"},
+						// "text": [
+						// 	// wasn't able to get test to work, so just doing logic when setting prettyTitle for
+						// 	// now
+						// 	//{test: "datum.label === 'dataset'", "field": "datum.prettyTitle"},
+						// 	{"field": "datum.prettyTitle"},
+						// ]
 					},
 					update: {
 						// make sure the labels move with the modes
@@ -243,11 +249,11 @@ export default (graphData) => {
 					enter: {
 						// add a tooltip to edges (aka links)
 				  	// TODO doesn't work
-						"tooltip": {
-							signal: [
-								"{title: datum.id}", 
-							]
-						},
+						// "tooltip": {
+						// 	signal: [
+						// 		"{title: datum.label}", 
+						// 	]
+						// },
 					},
 					"update": {
 						"stroke": {"value": "#ccc"},

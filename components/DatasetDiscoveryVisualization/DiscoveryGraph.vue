@@ -176,10 +176,11 @@ export default {
       nodes = nodes.map((n, index) => {
         n.index = index
         n.prettyLabel = prettyLabels[n.label]
-        n.prettyTitle = `${n.prettyLabel}: ${n.name}`
+        n.prettyTitle = n.label == "dataset" ? `${n.name}` : ""
+
         // truncate
-        if (n.prettyTitle.length > 25) {
-          n.prettyTitle = `${n.prettyTitle.substring(0, 25)}...`
+        if (n.prettyTitle.length > 55) {
+          n.prettyTitle = `${n.prettyTitle.substring(0, 55)}...`
         }
 
         return n
