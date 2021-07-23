@@ -285,6 +285,34 @@ export default (graphData) => {
 					}
 				]
 			}
+		],
+		"legends": [
+			{
+				"fill": "color",
+				"title": "Legend",
+				"orient": "bottom-left",
+				// padding under the title
+				titlePadding: 12,
+				// between rows in entries
+				rowPadding: 8,
+				"encode": {
+					"symbols": {"enter": {"fillOpacity": {"value": 1}}},
+					"title": {
+						"update": {
+							"fontSize": {"value": 20}
+						}
+					},
+					"labels": {
+						"update": {
+							// couldn't figure this one out
+							//"text": {"field": "group"}
+							fontSize: {value: 16},
+							// offset from the symbol and label 
+							dx: {value: 18},
+						}
+					},
+				}
+			}
 		]
 	}
 

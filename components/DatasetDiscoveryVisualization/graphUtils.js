@@ -1,3 +1,7 @@
+// for now, this value will be used directly within the legend, so just make it look presentable by default
+const DATASET_GROUP = "Dataset"
+const PERSON_GROUP = "Person"
+const OTHER_GROUP = "Other"
 /**
  * takes a single elasticsearch enriched record (ie for a single dataset) and converts to nodes and edges
  */ 
@@ -30,7 +34,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 	const datasetID = elasticsearchRecord.item.docid
 	nodes.push({
 		name: elasticsearchRecord.item.name,
-		group: "dataset",
+		group: DATASET_GROUP,
 		id: datasetID,
 		label: "dataset"
 	})
@@ -48,7 +52,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		nodes.push({
 			id,
 			name: awardName,
-			group: "other",
+			group: OTHER_GROUP,
 			label: "award"
 		})
 		edges.push({
@@ -69,7 +73,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		nodes.push({
 			id,
 			name: nameForPerson(owner),
-			group: "person",
+			group: PERSON_GROUP,
 			label: "person",
 		})
 
@@ -90,7 +94,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 		nodes.push({
 			id,
 			name: organization.name,
-			group: "other",
+			group: OTHER_GROUP,
 			label: "organization",
 		})
 
@@ -140,7 +144,8 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 
 	nodes.push({
 		name: pennsieveRecord.name,
-		group: "dataset",
+		// group is going to be displayed in legend directly now without modification, so for now just capitalize here
+		group: DATASET_GROUP,
 		id: datasetID,
 		label: "dataset"
 	})
@@ -169,7 +174,7 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 		nodes.push({
 			id: ownerId,
 			name: ownerName,
-			group: "person",
+			group: PERSON_GROUP,
 			label: "person",
 		})
 
@@ -199,7 +204,7 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 		nodes.push({
 			id: orgId,
 			name: pennsieveRecord.organizationName,
-			group: "other",
+			group: OTHER_GROUP,
 			label: "organization",
 		})
 
@@ -229,7 +234,7 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 		nodes.push({
 			id,
 			name: nameForPerson(contributor),
-			group: "person",
+			group: PERSON_GROUP,
 			label: "person",
 		})
 
@@ -249,7 +254,7 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 				nodes.push({
 					id: affiliationID,
 					name: affiliationID,
-					group: "other",
+					group: OTHER_GROUP,
 					label: "affiliation",
 				})
 
