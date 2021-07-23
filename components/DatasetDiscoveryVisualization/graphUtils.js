@@ -31,7 +31,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 
 	// add this dataset itself
 
-	const datasetID = elasticsearchRecord.item.docid
+	const datasetID = String(elasticsearchRecord.item.docid)
 	nodes.push({
 		name: elasticsearchRecord.item.name,
 		group: DATASET_GROUP,
@@ -89,7 +89,7 @@ export function elasticsearchRecordToGraphEntities (elasticsearchRecord) {
 	if (elasticsearchRecord.pennsieve && elasticsearchRecord.pennsieve.organization)  {
 		const organization = elasticsearchRecord.pennsieve.organization
 		// use orcid
-		const id = organization.identifier
+		const id = String(organization.identifier)
 
 		nodes.push({
 			id,
@@ -140,7 +140,8 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 	const edges = []
 	console.warn("WARNING not yet implemented pennsieve record graph entities")
 
-	const datasetID = pennsieveRecord.doi ? `DOI:${pennsieveRecord.doi}` : pennsieveRecord.id
+  // - make sure id is a string though, we don't want integers or deduping is a nightmare
+	const datasetID = String(pennsieveRecord.doi ? `DOI:${pennsieveRecord.doi}` : pennsieveRecord.id)
 
 	nodes.push({
 		name: pennsieveRecord.name,
@@ -152,7 +153,9 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 
 	//////////////////////////
 	// add entities for owner
-	let ownerId 	= pennsieveRecord.ownerOrcid && pennsieveRecord.ownerOrcid !== "" ? `ORCID:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId
+	
+  // - make sure id is a string though, we don't want integers or deduping is a nightmare
+	let ownerId 	= String(pennsieveRecord.ownerOrcid && pennsieveRecord.ownerOrcid !== "" ? `ORCID:${pennsieveRecord.ownerOrcid}` : pennsieveRecord.ownerId)
 
 	let ownerName = pennsieveRecord.ownerLastName && pennsieveRecord.ownerLastName !== "" && nameForPerson({
 		lastName: pennsieveRecord.ownerLastName, 
@@ -200,7 +203,9 @@ export function pennsieveRecordToGraphEntities (pennsieveRecord) {
 	}
 		
 	if (pennsieveRecord.organizationId) {
-		const orgId = pennsieveRecord.organizationId
+		// make sure it is a string though, we don't want integers or deduping is a nightmare
+		const orgId = String(pennsieveRecord.organizationId)
+
 		nodes.push({
 			id: orgId,
 			name: pennsieveRecord.organizationName,
@@ -228,8 +233,9 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 	contributors.forEach((contributor) => {
 
 		// use identifier if possible, if not use agency name as unique id for this contributor type
-		// if not that, full name
-		const id = contributor.curie || (contributor.orcid ? `ORCID:${contributor.orcid}` : nameForPerson(contributor))
+		// = if not that, full name
+		// - make sure it is a string though, we don't want integers or deduping is a nightmare
+		const id = String(contributor.curie || (contributor.orcid ? `ORCID:${contributor.orcid}` : nameForPerson(contributor)))
 
 		nodes.push({
 			id,
@@ -249,7 +255,7 @@ function addEntitiesForContributors({nodes, edges, datasetID, contributors}) {
 			contributor.affiliations.forEach(affiliation => {
 
 				// I think they only have descriptions, no other fields
-				const affiliationID = affiliation.description
+				const affiliationID = String(affiliation.description)
 
 				nodes.push({
 					id: affiliationID,
