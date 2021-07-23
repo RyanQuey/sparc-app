@@ -172,16 +172,15 @@ export function generateSummaryTableSpec (tableData) {
 	rows.unshift(sideColumnFormatted)
 
 	const options = {
-		layout:{
-			width: 800,
-			height: 1500,
-			margin: {
-		    l: 50,
-		    r: 50,
-		    b: 100,
-		    t: 100,
-		    pad: 4
-		  },
+		height: 900,
+		//auto is best for width
+		//width: 800,
+		margin: {
+			l: 50,
+			r: 50,
+			b: 100,
+			t: 100,
+			pad: 4
 		},
 	}
 
