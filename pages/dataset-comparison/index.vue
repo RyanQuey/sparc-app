@@ -201,6 +201,21 @@ const discoveryDataTypes = [
     type: 'graph',
     disabled: false,
   },
+
+  {
+    label: 'Summary Table',
+    type: 'summaryTable',
+    requiresOsparcJob: true,
+    disabled: false,
+  },
+
+  {
+    label: 'Common Keywords',
+    type: 'nlp',
+    requiresOsparcJob: true,
+    disabled: false,
+  },
+
   {
     label: 'Abstract',
     type: 'abstract',
@@ -208,30 +223,21 @@ const discoveryDataTypes = [
     requiresOsparcJob: true,
     disabled: false,
   },
+
   {
-    label: 'Common Keywords',
-    type: 'nlp',
-    requiresOsparcJob: true,
-    disabled: false,
-  },
-  {
-    label: 'Summary Table',
-    type: 'summaryTable',
-    requiresOsparcJob: true,
-    disabled: false,
-  },
-  {
-    label: 'Image Clustering',
-    type: 'imageCluster',
-    requiresOsparcJob: true,
-    disabled: false,
-  },
-  {
-    label: 'Data Correlation',
+    label: 'Data Plots',
     type: 'tabularDataClustering',
     requiresOsparcJob: true,
     disabled: false,
   },
+
+  {
+    label: 'Image Clustering',
+    type: 'imageCluster',
+    requiresOsparcJob: false,
+    disabled: false,
+  },
+
 ]
 
 const searchData = {

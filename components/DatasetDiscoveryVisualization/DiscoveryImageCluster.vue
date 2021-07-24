@@ -72,7 +72,7 @@ export default {
       // what we actually send to chart...so we don't have to retrieve from osparc everytime we refresh necessarily
       // ie adds a layer of abstraction from the store, so store stays always in line wiwth osparc data, but we can do what we want in frontend
       dataUsedInChart: {},
-      exampleImgURL: "https://miro.medium.com/max/1041/1*n8UZ90NsFpGhHJSQ3YCg_Q.png",
+      exampleImgURL: "https://www.unisza.edu.my/iacbe2017/images/theme/notyetavailablekyle.jpg",
       generateScatterplotSpec: generateDefaultScatterplotSpec,
     }
   },
