@@ -107,7 +107,8 @@ export function generateWordCloudSpec (keywordsData) {
 						"baseline": {"value": "alphabetic"},
 						"fill": {"scale": "color", "field": "text"},
 						"font": {"value": "Helvetica Neue, Arial"},
-						"fontWeight": {"field": "weight"}
+						"fontWeight": {"field": "weight"},
+						"tooltip": {"signal": "'Count: ' + datum.count"}
 					},
 					"update": {
 						"x": {"field": "x"},
