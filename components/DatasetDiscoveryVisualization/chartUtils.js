@@ -43,19 +43,19 @@ export function generateWordCloudSpec (keywordsData) {
 
 		"signals": [
 			{
-				"name": "wordPadding", "value": 1,
+				"name": "wordPadding", "value": 3,
 				"bind": {"input": "range", "min": 0, "max": 5, "step": 1, "name": "Word Padding"}
 			},
 			{
-				"name": "fontSizeRange0", "value": 16,
-				"bind": {"input": "range", "min": 8, "max": 42, "step": 1, "name": "Font Size (min)"}
+				"name": "fontSizeRange0", "value": 35,
+				"bind": {"input": "range", "min": 8, "max": 45, "step": 1, "name": "Font Size (min)"}
 			},
 			{
-				"name": "fontSizeRange1", "value": 48,
-				"bind": {"input": "range", "min": 8, "max": 64, "step": 1, "name": "Font Size (max)"}
+				"name": "fontSizeRange1", "value": 64,
+				"bind": {"input": "range", "min": 8, "max": 65, "step": 1, "name": "Font Size (max)"}
 			},
 			{
-				"name": "rotate", "value": 45,
+				"name": "rotate", "value": 90,
 				"bind": {"input": "select", "options": [0, 30, 45, 60, 90], "name": "Rotate"}
 			}
 		],
@@ -188,7 +188,7 @@ export function generateSummaryTableSpec (tableData) {
 			values: rows,
 			align: "center",
 			line: {color: "black", width: 1},
-			font: {family: "Arial", size: 14, color: ["black"]}
+			font: {family: "Arial", size: 15, color: ["black"]}
 		}
 	}]
 
