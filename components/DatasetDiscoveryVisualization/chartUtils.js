@@ -187,7 +187,7 @@ export function generateSummaryTableSpec (tableData) {
 			values: rows,
 			align: "center",
 			line: {color: "black", width: 1},
-			font: {family: "Arial", size: 11, color: ["black"]}
+			font: {family: "Arial", size: 14, color: ["black"]}
 		}
 	}]
 
