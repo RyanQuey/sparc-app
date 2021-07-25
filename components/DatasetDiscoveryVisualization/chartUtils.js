@@ -184,6 +184,17 @@ export function generateSummaryTableSpec (tableData) {
 		// 	fill: {color: "grey"},
 		// 	font: {family: "Arial", size: 12, color: "white"}
 		// },
+		layout:{
+			width: 800,
+  			height: 1500,
+  			margin: {
+		    l: 50,
+		    r: 50,
+		    b: 100,
+		    t: 100,
+		    pad: 4
+		  },
+		},
 		cells: {
 			values: rows,
 			align: "center",
